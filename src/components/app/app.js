@@ -29,11 +29,11 @@ export default class App extends Component {
     }
 
     render() {
-        const char = this.state.showRandomChar ? <RandomChar/> : null;
-
         if(this.state.error) {
             return <ErrorMessage/>
         }
+
+        const char = this.state.showRandomChar ? <RandomChar/> : null;
 
         return (
             <>
