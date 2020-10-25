@@ -1,9 +1,10 @@
 import React from 'react';
 import {Col, Row} from 'reactstrap';
+import './rowBlock.css';
 
 const RowBlock = ({left, right}) => {
     return (
-        <Row>
+        <Row className="row">
             <Col md='6'>
                 {left}
             </Col>

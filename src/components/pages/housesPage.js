@@ -16,7 +16,7 @@ export default class HousesPage extends Component {
 
     onItemSelected = (id) => {
         this.setState({
-            selectedItem: id
+            selectedHouse: id
         })
     }
 
