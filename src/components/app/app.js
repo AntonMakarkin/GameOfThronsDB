@@ -3,9 +3,7 @@ import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
 import ErrorMessage from '../errorMessage';
-import CharacterPage from '../pages/characterPage';
-import HousesPage from '../pages/housesPage';
-import BooksPage from '../pages/booksPage';
+import {CharacterPage, BooksPage, HousesPage, BooksItem} from '../pages';
 import gotService from '../../services/gotService';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
@@ -45,7 +43,7 @@ export default class App extends Component {
         return (
             <Router>
                 <div className="app">
-                    <Container>
+                    <Container /*className="mb-5 pb-4"*/>
                         <Header/>
                     </Container>
                     <Container>
@@ -58,12 +56,15 @@ export default class App extends Component {
                             </Col>
                         </Row>
 
-                        {/*<Route path='/characters' component={CharacterPage}/>
-                        <Route path='/books' component={BooksPage}/>
-                        <Route path ='/houses' component={HousesPage}/>*/}
-                        <CharacterPage/>
-                        <BooksPage/>
-                        <HousesPage/>
+                        <Route path='/' exact component={() => <h1>Welcome to GOT DB</h1>}/>
+                        <Route path='/characters' component={CharacterPage}/>
+                        <Route path ='/houses' component={HousesPage}/>
+                        <Route path='/books' exact component={BooksPage}/>
+                        <Route path='/books/:id' render={
+                            ({match, location, history}) => {
+                                const {id} = match.params;
+                            return <BooksItem bookId={id}/>}
+                        }/>
                     </Container>
                 </div>
             </Router>
