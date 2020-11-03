@@ -3,48 +3,10 @@ import './itemList.css';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 import PropTypes from 'prop-types';
+import gotService from '../../services/gotService';
+//import { render } from 'node-sass';
 
-export default class ItemList extends Component {
-
-    state = {
-        itemList: null,
-        error: false
-    }
-
-    static defaultProps = {
-        onItemSelected: () => {},   
-    }
-    
-    static propTypes = {
-        onItemSelected: PropTypes.func,
-    }
-
-    componentDidMount() {
-        const {getData} = this.props;
-
-        getData()
-            .then((itemList) => {
-                this.setState({
-                    itemList,
-                    error: false
-                })
-            })
-            .catch(() => {this.onError()});
-    }
-
-    componentDidCatch() {
-        this.setState({
-            charList: null,
-            error: true
-        })
-    }
-
-    onError(status) {
-        this.setState({
-            charList: null,
-            error: true
-        })
-    }
+class ItemList extends Component {
 
     renderItems(arr) {
         return arr.map((item) => {
@@ -62,19 +24,11 @@ export default class ItemList extends Component {
         })
     }
 
-    render() {
+    render() {        
+    
+        const {data} = this.props;
 
-        const {itemList, error} = this.state;
-        
-        if(error) {
-            return <ErrorMessage/>
-        }
-
-        if (!itemList) {
-            return <Spinner/>
-        }
-
-        const items = this.renderItems(itemList);
+        const items = this.renderItems(data)
 
         return (
             <ul className="item-list list-group">
@@ -84,10 +38,61 @@ export default class ItemList extends Component {
     }
 }
 
-/*ItemList.defaultProps = {
-    onItemSelected: () => {},   
-}
+const withData = (View, getData) => {
+    return class extends Component {
+        state = {
+            data: null,
+            error: false
+        }
 
-ItemList.propTypes = {
-    onItemSelected: PropTypes.func,
-}*/ //old checking
+        static defaultProps = {
+            onItemSelected: () => {},   
+        }
+        
+        static propTypes = {
+            onItemSelected: PropTypes.func,
+        }
+
+        componentDidCatch() {
+            this.setState({
+                charList: null,
+                error: true
+            })
+        }
+    
+        onError(status) {
+            this.setState({
+                charList: null,
+                error: true
+            })
+        }
+
+        componentDidMount() {
+    
+            getData()
+                .then((data) => {
+                    this.setState({
+                        data,
+                        error: false
+                    })
+                })
+                .catch(() => {this.onError()});
+        }
+
+        render() {
+            const {data, error} = this.state;
+        
+            if(error) {
+                return <ErrorMessage/>
+            }
+
+            if (!data) {
+                return <Spinner/>
+            }
+            return <View {...this.props} data={data}/>
+        }
+    };
+}
+const {getAllCharacters} = new gotService();
+export default withData(ItemList, getAllCharacters);
+
